@@ -1,19 +1,16 @@
 from pyrogram import Client, filters
-from argparse import ArgumentParser
-import asyncio
-parser = ArgumentParser(description='User-Бот для направления твинков за главным кто мутит для гманкабота.')
-parser.add_argument('-um', '--usermain', type=str, help='Твой username через "@", только один.')
-parser.add_argument('-uc', '--userchase', type=str, help='username того с кем голосовать через "@", только один.')
-args = parser.parse_args()
-if not args.usermain:
-    parser.error('Аргумент usermain является обязательным. (-um @USERNAME или --usermain @USERNAME), --help для дополнительной информации.')
-if not args.userchase:
-    parser.error('Аргумент userchase является обязательным. (-uc @USERNAME или --userchase @USERNAME), --help для дополнительной информации.')
+import os
 
-api_id = int(id)
-api_hash = str(hash)
+api_id = int(os.getenv('API_ID'))
+api_hash = os.getenv('API_HASH')
+usermain = os.getenv('USER_MAIN')
+userchase = os.getenv('USER_CHASE')
+sessions_path = os.getenv('SESSIONS_PATH')
 
-bot = Client(args.usermain, api_id=api_id, api_hash=api_hash)
+if not os.path.exists(sessions_path):
+    os.makedirs(sessions_path)
+
+bot = Client(f"{sessions_path}/{usermain.strip('@')}", api_id=api_id, api_hash=api_hash)
 
 @bot.on_edited_message(filters.group)
 @bot.on_message(filters.group)
@@ -44,7 +41,7 @@ async def handle_messages(client, message):
                 callback_data = button.callback_data
                 buttons_callback_data.append(callback_data)
 
-        if args.userchase in votes_for_mute:
+        if userchase in votes_for_mute:
             await client.request_callback_answer(
                 chat_id=message.chat.id,
                 message_id=message.id,
@@ -52,7 +49,7 @@ async def handle_messages(client, message):
             )
             return
 
-        if args.userchase in votes_against_mute:
+        if userchase in votes_against_mute:
             await client.request_callback_answer(
                 chat_id=message.chat.id,
                 message_id=message.id,

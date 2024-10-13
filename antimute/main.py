@@ -1,17 +1,18 @@
 from pyrogram import Client, filters
-from argparse import ArgumentParser
-import asyncio
-parser = ArgumentParser(description='User-Бот для автоматического голосания против мута самого себя для гманкабота.')
-parser.add_argument('-u', '--username', nargs='+', type=str, help='Твой username через "@", можно несколько.')
-args = parser.parse_args()
-if not args.username:
-    parser.error('Аргумент username является обязательным. (-u @USERNAME или --username @USERNAME), --help для дополнительной информации.')
+import os
 
-api_id = int(id)
-api_hash = str(hash)
-usernames = args.username
+api_id = int(os.getenv('API_ID'))
+api_hash = os.getenv('API_HASH')
+usernames = os.getenv('USERNAMES', '').split()
+sessions_path = os.getenv('SESSIONS_PATH')
 
-bot = Client(usernames[0], api_id=api_id, api_hash=api_hash)
+if not usernames:
+    raise ValueError('Переменная окружения USERNAMES является обязательной.')
+
+if not os.path.exists(sessions_path):
+    os.makedirs(sessions_path)
+
+bot = Client(f"{sessions_path}/{usernames[0].strip('@')}", api_id=api_id, api_hash=api_hash)
 
 @bot.on_message(filters.chat("gmankachat"))
 async def handle_messages(client, message):

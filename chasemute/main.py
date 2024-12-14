@@ -15,7 +15,7 @@ bot = Client(f"{sessions_path}/{usermain.strip('@')}", api_id=api_id, api_hash=a
 @bot.on_edited_message(filters.group)
 @bot.on_message(filters.group)
 async def handle_messages(client, message):
-    if message.from_user.username == "gmanka3_anarchy_bot":
+    if message.from_user.username == "g_anarchy_bot":
         lines = message.text.split("\n")
         votes_for_mute = []
         votes_against_mute = []

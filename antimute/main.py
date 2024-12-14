@@ -16,7 +16,7 @@ bot = Client(f"{sessions_path}/{usernames[0].strip('@')}", api_id=api_id, api_ha
 
 @bot.on_message(filters.chat("gmankachat"))
 async def handle_messages(client, message):
-    if message.from_user.username == "gmanka3_anarchy_bot":
+    if message.from_user.username == "g_anarchy_bot":
         lines = message.text.split("\n")
         mute_target = lines[0].split(' ')[1].rstrip('?')
         buttons_callback_data = []
